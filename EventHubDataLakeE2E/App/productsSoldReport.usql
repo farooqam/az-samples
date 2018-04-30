@@ -1,0 +1,41 @@
+﻿REFERENCE ASSEMBLY productEvents.[Avro];
+REFERENCE ASSEMBLY productEvents.[Microsoft.Analytics.Samples.Formats];
+REFERENCE ASSEMBLY productEvents.[Newtonsoft.Json];
+
+
+USING Microsoft.Analytics.Samples.Formats.ApacheAvro;
+
+DECLARE @inputFolder string = @"adl://dataLakeStoreName.azuredatalakestore.net/events/products/sold/{date:yyyy}/{date:MM}/{date:dd}/{*}";
+
+@extract =
+    EXTRACT Id string,
+			EventProcessedUtcTime string,
+			PartitionId string,
+			EventEnqueuedUtcTime string,
+			date DateTime
+    FROM @inputFolder
+    USING new AvroExtractor(@"
+        {
+            ""type"":""record"",
+            ""name"":""GenericFromIRecord0"",
+            ""namespace"":""Microsoft.Streaming.Avro"",
+            ""fields"":[
+                {""name"":""Id"",""type"":[""null"",""string""]},
+                {""name"":""EventProcessedUtcTime"",""type"":[""null"",""string""]},
+				{""name"":""PartitionId"",""type"":[""null"",""string""]},
+				{""name"":""EventEnqueuedUtcTime"",""type"":[""null"",""string""]}
+            ]
+        }
+    ");
+
+@report =
+    SELECT Id AS ProductId,
+           COUNT(Id) AS NumberSold
+    FROM @extract
+    GROUP BY Id
+    ORDER BY COUNT(Id) DESC
+    FETCH 10 ROWS;
+     
+OUTPUT @report
+TO "/reports/products/productsSoldReport.csv"
+USING Outputters.Csv(outputHeader: true);

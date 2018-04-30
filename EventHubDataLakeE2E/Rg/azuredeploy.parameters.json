@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dataLakeAccountTenantId": {
+            "value": "Your Azure Active Directory tenant id."
+        },
+        "dataLakeAccountTokenUserPrincipalName": {
+            "value": "The user name associated with your Azure subscription."
+        },
+        "dataLakeAccountTokenUserDisplayName": {
+            "value": "Your name that is associated with your Azure subscription."
+        }
+    }
+}
