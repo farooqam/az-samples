@@ -3,10 +3,11 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "databaseAccountName": {
-      "type": "string",
-      "metadata": {
-        "description": "The Azure Cosmos DB database account name."
-      }
+        "defaultValue": "[concat('db', uniqueString(resourceGroup().id))]",
+        "type": "string",
+        "metadata": {
+            "description": "The Azure Cosmos DB database account name."
+        }
     },
     "consistencyLevel": {
       "type": "string",
