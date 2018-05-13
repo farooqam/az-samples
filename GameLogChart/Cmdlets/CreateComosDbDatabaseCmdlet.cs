@@ -5,7 +5,7 @@ using Microsoft.Azure.Documents.Client;
 namespace Cmdlets
 {
     [Cmdlet(VerbsCommon.Add, "CosmosDbDatabase")]
-    public class CreateComosDbDatabase : CosmosDbDatabaseCmdlet
+    public class CreateComosDbDatabaseCmdlet : CosmosDbDatabaseCmdlet
     {
         protected override object ResolveDatabase()
         {

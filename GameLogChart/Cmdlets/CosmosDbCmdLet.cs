@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.Documents.Client;
 
 namespace Cmdlets
 {
-    public class CosmosDbCmdLet : Cmdlet
+    public class CosmosDbCmdlet : Cmdlet
     {
-
         protected DocumentClient DocumentClient { get; private set; }
 
         [Parameter(
@@ -34,7 +29,5 @@ namespace Cmdlets
         {
             DocumentClient = new DocumentClient(Uri, Key);
         }
-
-
     }
 }

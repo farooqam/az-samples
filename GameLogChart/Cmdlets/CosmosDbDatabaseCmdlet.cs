@@ -5,7 +5,7 @@ using Microsoft.Azure.Documents.Client;
 
 namespace Cmdlets
 {
-    public abstract class CosmosDbDatabaseCmdlet : CosmosDbCmdLet
+    public abstract class CosmosDbDatabaseCmdlet : CosmosDbCmdlet
     {
         [Parameter(
             Mandatory = true,

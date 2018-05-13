@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Management.Automation;
 
 namespace Cmdlets
 {
-    public class CosmosDbCollectionCmdLet : CosmosDbCmdLet
+    public class CosmosDbCollectionCmdlet : CosmosDbCmdlet
     {
         [Parameter(
             Mandatory = true,

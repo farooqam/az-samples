@@ -6,7 +6,7 @@ using Microsoft.Azure.Documents.Client;
 namespace Cmdlets
 {
     [Cmdlet(VerbsCommon.Add, "CosmosDbCollection")]
-    public class CreateCosmosDbCollection : CosmosDbCollectionCmdLet
+    public class CreateCosmosDbCollectionCmdlet : CosmosDbCollectionCmdlet
     {
         protected override void ProcessRecord()
         {

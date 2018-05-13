@@ -6,7 +6,7 @@ using Microsoft.Azure.Documents.Client;
 namespace Cmdlets
 {
     [Cmdlet(VerbsCommon.Remove, "CosmosDbDatabase")]
-    public class RemoveComosDbDatabase : CosmosDbDatabaseCmdlet
+    public class RemoveComosDbDatabaseCmdlet : CosmosDbDatabaseCmdlet
     {
         protected override object ResolveDatabase()
         {
