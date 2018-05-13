@@ -5,6 +5,7 @@ using Microsoft.Azure.Documents.Client;
 
 namespace Cmdlets
 {
+    [Cmdlet(VerbsCommon.Add, "CosmosDbCollection")]
     public class CreateCosmosDbCollection : CosmosDbCollectionCmdLet
     {
         protected override void ProcessRecord()
