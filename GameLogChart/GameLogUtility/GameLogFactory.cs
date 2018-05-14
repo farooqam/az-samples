@@ -41,6 +41,8 @@ namespace Retrosheet.Utilities.GameLogUtility
                     gameLog.TryAdd("id", $"{gameYear}-{gameMonth}-{gameDay}-{dyno.game_number}-{dyno.home_team}");
                     gameLog.TryAdd("game_month", byte.Parse(gameMonth));
                     gameLog.TryAdd("game_day", byte.Parse(gameDay));
+                    gameLog.TryAdd("game_year", short.Parse(gameYear));
+
                 }
 
             }

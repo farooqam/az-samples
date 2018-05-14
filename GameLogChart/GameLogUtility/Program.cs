@@ -77,8 +77,9 @@ namespace Retrosheet.Utilities.GameLogUtility
                         docsUploaded++;
                         Console.Write(
                             $"\rDocument {docsUploaded}/{gameLogs.Count} uploaded; Status:{response.StatusCode}; RU's:{response.RequestCharge}");
-                        Console.WriteLine(Environment.NewLine);
                     }
+
+                    Console.WriteLine(Environment.NewLine);
                 }
             }
 

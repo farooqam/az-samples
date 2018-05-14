@@ -21,7 +21,7 @@ namespace Cmdlets
             {
                 var db = ResolveDatabase();
                 var response = OnProcessRecord(db);
-                WriteObject(new {id = Name, staus = response.StatusCode, requestCharge = response.RequestCharge});
+                WriteObject(new {id = Name, status = response.StatusCode, requestCharge = response.RequestCharge});
             }
             catch (AggregateException aggregateException)
             {

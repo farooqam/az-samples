@@ -15,7 +15,7 @@ namespace Cmdlets
                 var databaseUri = UriFactory.CreateDatabaseUri(Database);
                 var documentCollection = new DocumentCollection {Id = Name};
                 var response = DocumentClient.CreateDocumentCollectionAsync(databaseUri, documentCollection).Result;
-                WriteObject(new {id = Name, staus = response.StatusCode, requestCharge = response.RequestCharge});
+                WriteObject(new {id = Name, status = response.StatusCode, requestCharge = response.RequestCharge});
             }
             catch (AggregateException aggregateException)
             {

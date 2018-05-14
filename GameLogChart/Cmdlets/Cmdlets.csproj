@@ -56,10 +56,10 @@
     <Compile Include="CosmosDbCmdLet.cs" />
     <Compile Include="CosmosDbCollectionCmdLet.cs" />
     <Compile Include="CosmosDbDatabaseCmdlet.cs" />
-    <Compile Include="CreateComosDbDatabase.cs" />
-    <Compile Include="CreateCosmosDbCollection.cs" />
+    <Compile Include="CreateComosDbDatabaseCmdlet.cs" />
+    <Compile Include="CreateCosmosDbCollectionCmdlet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoveCosmosDbDatabase.cs" />
+    <Compile Include="RemoveCosmosDbDatabaseCmdlet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
