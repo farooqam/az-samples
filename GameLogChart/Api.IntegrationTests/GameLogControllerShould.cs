@@ -57,12 +57,13 @@ namespace Api.IntegrationTests
             {
                 new GameResult
                 {
+                    GameYear = year,
                     AwayTeam = "bos",
                     AwayTeamScore = 5,
                     GameDay = 11,
                     GameMonth = 5,
                     GameNumber = 12,
-                    HomeTeam = "nya",
+                    HomeTeam = team,
                     HomeTeamScore = 7
                 }
             };
@@ -70,7 +71,7 @@ namespace Api.IntegrationTests
             _mockRepository.Setup(r => r.GetGameResultsAsync(team, year)).ReturnsAsync(gameResultsFromRepository);
             
             // Act
-            var response = await _client.GetAsync("api/gamelogs/nya/2017");
+            var response = await _client.GetAsync($"api/gamelogs/{team}/{year}");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -81,6 +82,7 @@ namespace Api.IntegrationTests
             var gameResultFromApi = gameResultsFromApi.First();
             var gameResultFromRepository = gameResultsFromRepository.First();
 
+            gameResultFromApi.GameYear.Should().Be(year);
             gameResultFromApi.AwayTeam.Should().Be(gameResultFromRepository.AwayTeam);
             gameResultFromApi.AwayTeamScore.Should().Be(gameResultFromRepository.AwayTeamScore);
             gameResultFromApi.GameDay.Should().Be(gameResultFromRepository.GameDay);

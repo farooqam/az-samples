@@ -2,6 +2,7 @@
 {
     public class GameResult
     {
+        public short GameYear { get; set; }
         public byte GameNumber { get; set; }
 
         public byte GameMonth { get; set; }
