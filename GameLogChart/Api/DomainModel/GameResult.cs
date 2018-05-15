@@ -17,6 +17,6 @@
 
         public byte AwayTeamScore { get; set; }
 
-        public byte RunDifferential => (byte)(HomeTeamScore - AwayTeamScore);
+        public int RunDifferential => HomeTeamScore - AwayTeamScore;
     }
 }

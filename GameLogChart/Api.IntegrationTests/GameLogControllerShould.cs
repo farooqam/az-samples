@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Api.DataModels;
-using Api.Services;
+using Api.DomainModel;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -13,14 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+using GameResult = Api.DataModels.GameResult;
 
 namespace Api.IntegrationTests
 {
     public class GameLogControllerShould
     {
-        private readonly HttpClient _client;
-        private readonly Mock<IGameResultRepository> _mockRepository = new Mock<IGameResultRepository>();
-
         public GameLogControllerShould()
         {
             // Arrange
@@ -29,22 +25,12 @@ namespace Api.IntegrationTests
                 .ConfigureServices(
                     collection => collection.AddTransient(provider => _mockRepository.Object))
             );
-            
+
             _client = server.CreateClient();
         }
 
-        [Fact]
-        public async Task ReturnNotFoundWhenNoGameResult()
-        {
-            // Arrange
-            _mockRepository.Setup(r => r.GetGameResultsAsync(It.IsAny<string>(), It.IsAny<short>())).ReturnsAsync(new List<GameResult>());
-
-            // Act
-            var response = await _client.GetAsync("api/gamelogs/nya/2017");
-
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
+        private readonly HttpClient _client;
+        private readonly Mock<IGameResultRepository> _mockRepository = new Mock<IGameResultRepository>();
 
         [Fact]
         public async Task ReturnGameLogsAndOkStatusCode()
@@ -69,7 +55,7 @@ namespace Api.IntegrationTests
             };
 
             _mockRepository.Setup(r => r.GetGameResultsAsync(team, year)).ReturnsAsync(gameResultsFromRepository);
-            
+
             // Act
             var response = await _client.GetAsync($"api/gamelogs/{team}/{year}");
 
@@ -77,7 +63,8 @@ namespace Api.IntegrationTests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            var gameResultsFromApi = JsonConvert.DeserializeObject<IEnumerable<DomainModel.GameResult>>(responseContent);
+            var gameResultsFromApi =
+                JsonConvert.DeserializeObject<IEnumerable<DomainModel.GameResult>>(responseContent);
 
             var gameResultFromApi = gameResultsFromApi.First();
             var gameResultFromRepository = gameResultsFromRepository.First();
@@ -90,7 +77,22 @@ namespace Api.IntegrationTests
             gameResultFromApi.GameNumber.Should().Be(gameResultFromRepository.GameNumber);
             gameResultFromApi.HomeTeam.Should().Be(gameResultFromRepository.HomeTeam);
             gameResultFromApi.HomeTeamScore.Should().Be(gameResultFromRepository.HomeTeamScore);
-            gameResultFromApi.RunDifferential.Should().Be((byte)(gameResultFromRepository.HomeTeamScore - gameResultFromRepository.AwayTeamScore));
+            gameResultFromApi.RunDifferential.Should()
+                .Be((byte) (gameResultFromRepository.HomeTeamScore - gameResultFromRepository.AwayTeamScore));
+        }
+
+        [Fact]
+        public async Task ReturnNotFoundWhenNoGameResult()
+        {
+            // Arrange
+            _mockRepository.Setup(r => r.GetGameResultsAsync(It.IsAny<string>(), It.IsAny<short>()))
+                .ReturnsAsync(new List<GameResult>());
+
+            // Act
+            var response = await _client.GetAsync("api/gamelogs/nya/2017");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
-using Api.DataModels;
-using Api.Services;
+using Api.DomainModel;
 using Api.Services.DocumentDb;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using GameResult = Api.DataModels.GameResult;
 
 namespace Api
 {
@@ -38,8 +38,11 @@ namespace Api
             {
                 return new MapperConfiguration(config =>
                     {
-                        config.CreateMap<DataModels.GameResult, DomainModel.GameResult>()
+                        config.CreateMap<GameResult, DomainModel.GameResult>()
                             .ForMember(r => r.RunDifferential, opt => opt.Ignore());
+
+                        config.CreateMap<Services.DocumentDb.GameResult, GameResult>()
+                            .ConvertUsing<GameResultTypeConverter>();
                     })
                     .CreateMapper();
             });
