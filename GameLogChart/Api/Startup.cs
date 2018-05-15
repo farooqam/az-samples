@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Api.DomainModel;
 using Api.Services.DocumentDb;
 using AutoMapper;
@@ -7,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Swashbuckle.AspNetCore.Swagger;
 using GameResult = Api.DataModels.GameResult;
 
 namespace Api
@@ -39,12 +43,47 @@ namespace Api
                 return new MapperConfiguration(config =>
                     {
                         config.CreateMap<GameResult, DomainModel.GameResult>()
-                            .ForMember(r => r.RunDifferential, opt => opt.Ignore());
+                            .ForMember(r => r.RunDifferential, options => options.Ignore());
 
                         config.CreateMap<Services.DocumentDb.GameResult, GameResult>()
                             .ConvertUsing<GameResultTypeConverter>();
+
+                        config.CreateMap<IEnumerable<DomainModel.GameResult>, ApiModels.GameResult>()
+                            .ForMember(r => r.Count, options => options.Ignore())
+                            .ConvertUsing<ApiModels.GameResultTypeConverter>();
                     })
                     .CreateMapper();
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Baseball API",
+                    Description = "A simple Baseball API",
+                    TermsOfService = "None",
+                    Contact = new Contact
+                    {
+                        Name = "Farooq Mahmud",
+                        Email = string.Empty,
+                        Url = "https://github.com/farooqam"
+                    },
+                    License = new License
+                    {
+                        Name = "The MIT License",
+                        Url = "https://opensource.org/licenses/MIT"
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(x => x.FullName);
             });
         }
 
@@ -55,6 +94,14 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Baseball API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseMvc();
         }
