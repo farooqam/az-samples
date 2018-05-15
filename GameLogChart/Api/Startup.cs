@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Api.ApiModels;
 using Api.DomainModel;
 using Api.Services.DocumentDb;
 using AutoMapper;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
-using GameResult = Api.DataModels.GameResult;
+using GameResult = Api.Services.DocumentDb.GameResult;
 
 namespace Api
 {
@@ -42,15 +43,14 @@ namespace Api
             {
                 return new MapperConfiguration(config =>
                     {
-                        config.CreateMap<GameResult, DomainModel.GameResult>()
-                            .ForMember(r => r.RunDifferential, options => options.Ignore());
-
-                        config.CreateMap<Services.DocumentDb.GameResult, GameResult>()
+                        config.CreateMap<GameResult, DataModels.GameResult>()
                             .ConvertUsing<GameResultTypeConverter>();
 
-                        config.CreateMap<IEnumerable<DomainModel.GameResult>, ApiModels.GameResult>()
-                            .ForMember(r => r.Count, options => options.Ignore())
-                            .ConvertUsing<ApiModels.GameResultTypeConverter>();
+                        config.CreateMap<DataModels.GameResult, ApiModels.GameResult>();
+
+                        config.CreateMap<IEnumerable<ApiModels.GameResult>, ApiResult<ApiModels.GameResult>>()
+                            .ForMember(r => r.ResultCount, options => options.Ignore())
+                            .ConvertUsing<ApiResultTypeConverter>();
                     })
                     .CreateMapper();
             });
@@ -81,10 +81,7 @@ namespace Api
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.ConfigureSwaggerGen(options =>
-            {
-                options.CustomSchemaIds(x => x.FullName);
-            });
+            services.ConfigureSwaggerGen(options => { options.CustomSchemaIds(x => x.FullName); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
