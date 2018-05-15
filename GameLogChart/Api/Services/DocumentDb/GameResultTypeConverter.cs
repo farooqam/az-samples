@@ -14,7 +14,7 @@ namespace Api.Services.DocumentDb
                 HomeTeamScore = source.home_team_score,
                 AwayTeam = source.visiting_team,
                 GameDay = source.game_day,
-                AwayTeamScore = source.visting_team_score,
+                AwayTeamScore = source.visiting_team_score,
                 GameMonth = source.game_month,
                 GameNumber = source.game_number,
                 GameYear = source.game_year,

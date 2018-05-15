@@ -34,7 +34,7 @@ namespace Api.UnitTests.Services.DocumentDb
                 home_team = "nya",
                 home_team_score = 10,
                 visiting_team = "bos",
-                visting_team_score = 8
+                visiting_team_score = 8
             };
 
             // Act
@@ -43,7 +43,7 @@ namespace Api.UnitTests.Services.DocumentDb
 
             // Assert
 
-            dataModel.AwayTeamScore.Should().Be(documentDbModel.visting_team_score);
+            dataModel.AwayTeamScore.Should().Be(documentDbModel.visiting_team_score);
             dataModel.AwayTeam.Should().Be(documentDbModel.visiting_team);
             dataModel.GameDay.Should().Be(documentDbModel.game_day);
             dataModel.GameNumber.Should().Be(documentDbModel.game_number);

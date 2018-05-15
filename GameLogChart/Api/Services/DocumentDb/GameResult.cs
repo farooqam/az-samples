@@ -15,6 +15,6 @@
 
         public byte home_team_score { get; set; }
 
-        public byte visting_team_score { get; set; }
+        public byte visiting_team_score { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Api.Services.DocumentDb
             using (var client = new DocumentClient(_settings.Endpoint, _settings.Key))
             {
                 var queryString =
-                    $"SELECT c.game_year, c.game_number, c.game_month, c.game_day, c.home_team, c.visiting_team, c.home_team_score, c.visting_team_score " +
+                    $"SELECT c.game_year, c.game_number, c.game_month, c.game_day, c.home_team, c.visiting_team, c.home_team_score, c.visting_team_score AS visiting_team_score " +
                     $"FROM c WHERE (c.home_team = @team OR c.visiting_team = @team) " +
                     $"AND c.game_year = @year";
 
