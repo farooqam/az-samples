@@ -1,80 +1,160 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "databaseAccountName": {
-        "defaultValue": "[concat('db', uniqueString(resourceGroup().id))]",
-        "type": "string",
-        "metadata": {
-            "description": "The Azure Cosmos DB database account name."
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "databaseAccountName": {
+            "defaultValue": "[concat('db', uniqueString(resourceGroup().id))]",
+            "type": "string",
+            "metadata": {
+                "description": "The Azure Cosmos DB database account name."
+            }
+        },
+        "consistencyLevel": {
+            "type": "string",
+            "allowedValues": [
+                "Eventual",
+                "Strong",
+                "Session",
+                "BoundedStaleness"
+            ],
+            "defaultValue": "Session",
+            "metadata": {
+                "description": "The Azure Cosmos DB default consistency level for this account."
+            }
+        },
+        "maxStalenessPrefix": {
+            "type": "int",
+            "minValue": 10,
+            "maxValue": 1000,
+            "defaultValue": 10,
+            "metadata": {
+                "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, else it can be ignored."
+            }
+        },
+        "maxIntervalInSeconds": {
+            "type": "int",
+            "minValue": 5,
+            "maxValue": 600,
+            "defaultValue": 5,
+            "metadata": {
+                "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, else it can be ignored."
+            }
+        },
+        "environments": {
+            "defaultValue": [
+                "Development",
+                "Integration",
+                "Preview",
+                "Production"
+            ],
+            "type": "array",
+            "metadata": {
+                "description": "Environment slot names."
+            }
+        },
+        "appServicePlanName": {
+            "defaultValue": "[concat('appserviceplan', uniqueString(resourceGroup().id))]",
+            "type": "string",
+            "metadata": {
+                "description": "The App Service Plan name."
+            }
+        },
+        "webAppName": {
+            "defaultValue": "[concat('webapp', uniqueString(resourceGroup().id))]",
+            "type": "string",
+            "metadata": {
+                "description": "The Web App name."
+            }
         }
     },
-    "consistencyLevel": {
-      "type": "string",
-      "allowedValues": [
-        "Eventual",
-        "Strong",
-        "Session",
-        "BoundedStaleness"
-      ],
-      "defaultValue": "Session",
-      "metadata": {
-        "description": "The Azure Cosmos DB default consistency level for this account."
-      }
+    "variables": {
+        "offerType": "Standard"
     },
-    "maxStalenessPrefix": {
-      "type": "int",
-      "minValue": 10,
-      "maxValue": 1000,
-      "defaultValue": 10,
-      "metadata": {
-        "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, else it can be ignored."
-      }
-    },
-    "maxIntervalInSeconds": {
-      "type": "int",
-      "minValue": 5,
-      "maxValue": 600,
-      "defaultValue": 5,
-      "metadata": {
-        "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, else it can be ignored."
-      }
-    }
-  },
-  "variables": {
-    "offerType": "Standard"
-  },
-  "resources": [
-    {
-      "apiVersion": "2015-04-08",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "name": "[parameters('databaseAccountName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "name": "[parameters('databaseAccountName')]",
-        "databaseAccountOfferType": "[variables('offerType')]",
-        "consistencyPolicy": {
-          "defaultConsistencyLevel": "[parameters('consistencyLevel')]",
-          "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
-          "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
+    "resources": [
+        {
+            "apiVersion": "2015-04-08",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "name": "[parameters('databaseAccountName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "name": "[parameters('databaseAccountName')]",
+                "databaseAccountOfferType": "[variables('offerType')]",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "[parameters('consistencyLevel')]",
+                    "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
+                    "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
+                },
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0
+                    }
+                ]
+            }
         },
-        "locations": [
-          {
-            "locationName": "[resourceGroup().location]",
-            "failoverPriority": 0
-          }
-        ]
-      }
+        {
+            "apiVersion": "2017-08-01",
+            "type": "Microsoft.Web/serverfarms",
+            "kind": "app",
+            "name": "[parameters('appServicePlanName')]",
+            "location": "[resourceGroup().location]",
+            "comments": "This app service plan is used for the web app and slots.",
+            "tags": {
+                "displayName": "AppServicePlan"
+            },
+            "properties": {},
+            "dependsOn": [],
+            "sku": {
+                "name": "S1"
+            }
+        },
+        {
+            "apiVersion": "2016-08-01",
+            "type": "Microsoft.Web/sites",
+            "kind": "app",
+            "name": "[parameters('webAppName')]",
+            "location": "[resourceGroup().location]",
+            "comments": "This is the web app, also the default 'nameless' slot.",
+            "tags": {
+                "displayName": "WebApp"
+            },
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            ]
+        },
+        {
+            "apiVersion": "2016-08-01",
+            "type": "Microsoft.Web/sites/slots",
+            "name": "[concat(parameters('webAppName'), '/', parameters('environments')[copyIndex()])]",
+            "kind": "app",
+            "location": "[resourceGroup().location]",
+            "comments": "This specifies the web app slots.",
+            "tags": {
+                "displayName": "WebAppSlots"
+            },
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites', parameters('webAppName'))]"
+            ],
+            "copy": {
+                "name": "webPortalSlot",
+                "count": "[length(parameters('environments'))]"
+            }
+        }
+    ],
+    "outputs": {
+        "DocumentDbEndpoint": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('databaseAccountName'))).documentEndpoint]"
+        },
+        "DocumentDbPrimaryKey": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('databaseAccountName')), '2015-04-08').primaryMasterKey]"
+        }
     }
-  ],
-  "outputs": {
-    "DocumentDbEndpoint": {
-      "type": "string",
-      "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('databaseAccountName'))).documentEndpoint]"
-    },
-    "DocumentDbPrimaryKey": {
-      "type": "string",
-      "value": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('databaseAccountName')), '2015-04-08').primaryMasterKey]"
-    }
-  }
 }

@@ -1,4 +1,4 @@
-﻿using Api.DomainModel;
+﻿using Api.ApiModels;
 using FluentAssertions;
 using Xunit;
 

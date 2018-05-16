@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Api.ApiModels;
 using Api.DomainModel;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
@@ -57,16 +58,15 @@ namespace Api.IntegrationTests
             _mockRepository.Setup(r => r.GetGameResultsAsync(team, year)).ReturnsAsync(gameResultsFromRepository);
 
             // Act
-            var response = await _client.GetAsync($"api/gamelogs/{team}/{year}");
+            var response = await _client.GetAsync($"api/results/{team}/{year}");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            var gameResultsFromApi =
-                JsonConvert.DeserializeObject<IEnumerable<DomainModel.GameResult>>(responseContent);
+            var apiResult = JsonConvert.DeserializeObject<ApiResult<ApiModels.GameResult>>(responseContent);
 
-            var gameResultFromApi = gameResultsFromApi.First();
+            var gameResultFromApi = apiResult.Results.First();
             var gameResultFromRepository = gameResultsFromRepository.First();
 
             gameResultFromApi.GameYear.Should().Be(year);
@@ -77,8 +77,7 @@ namespace Api.IntegrationTests
             gameResultFromApi.GameNumber.Should().Be(gameResultFromRepository.GameNumber);
             gameResultFromApi.HomeTeam.Should().Be(gameResultFromRepository.HomeTeam);
             gameResultFromApi.HomeTeamScore.Should().Be(gameResultFromRepository.HomeTeamScore);
-            gameResultFromApi.RunDifferential.Should()
-                .Be((byte) (gameResultFromRepository.HomeTeamScore - gameResultFromRepository.AwayTeamScore));
+            gameResultFromApi.RunDifferential.Should().Be((byte) (gameResultFromRepository.HomeTeamScore - gameResultFromRepository.AwayTeamScore));
         }
 
         [Fact]

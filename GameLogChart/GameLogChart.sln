@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLogUtility", "GameLogUtility\GameLogUtility.csproj", "{88BA61F3-8C66-4A0A-A65E-875F12770E8D}"
-EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "GameLogsRg", "GameLogsRg\GameLogsRg.deployproj", "{D7DA5B22-7F6A-4725-9870-C3400F7F527F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5B89C1D-5BE2-4163-86AF-68C6A0D03F41}"
@@ -14,11 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmdlets", "Cmdlets\Cmdlets.csproj", "{2C7CF206-B4DD-4792-A8AF-1A2833264707}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{2377CCF7-81A4-409E-BA8D-08AA62864AA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{2377CCF7-81A4-409E-BA8D-08AA62864AA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.IntegrationTests", "Api.IntegrationTests\Api.IntegrationTests.csproj", "{EAD60442-CC89-4FB9-8D4B-1B88945777E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.IntegrationTests", "Api.IntegrationTests\Api.IntegrationTests.csproj", "{EAD60442-CC89-4FB9-8D4B-1B88945777E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.UnitTests", "Api.UnitTests\Api.UnitTests.csproj", "{B82A6370-7285-4EE1-A466-546CF08625BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.UnitTests", "Api.UnitTests\Api.UnitTests.csproj", "{B82A6370-7285-4EE1-A466-546CF08625BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogUtility", "GameLogUtility\GameLogUtility.csproj", "{A5D8DBC8-9881-4E9D-B551-818809AFF832}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +26,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{88BA61F3-8C66-4A0A-A65E-875F12770E8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88BA61F3-8C66-4A0A-A65E-875F12770E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88BA61F3-8C66-4A0A-A65E-875F12770E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88BA61F3-8C66-4A0A-A65E-875F12770E8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7DA5B22-7F6A-4725-9870-C3400F7F527F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7DA5B22-7F6A-4725-9870-C3400F7F527F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7DA5B22-7F6A-4725-9870-C3400F7F527F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,6 +46,10 @@ Global
 		{B82A6370-7285-4EE1-A466-546CF08625BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B82A6370-7285-4EE1-A466-546CF08625BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B82A6370-7285-4EE1-A466-546CF08625BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5D8DBC8-9881-4E9D-B551-818809AFF832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5D8DBC8-9881-4E9D-B551-818809AFF832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5D8DBC8-9881-4E9D-B551-818809AFF832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5D8DBC8-9881-4E9D-B551-818809AFF832}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

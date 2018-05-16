@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using Net.Code.Csv;
 
@@ -16,7 +15,7 @@ namespace Retrosheet.Utilities.GameLogUtility
 
         public ExpandoObject CreateGameLogFromCsv(string csv)
         {
-            var gameLog = new ExpandoObject();
+            var gameLog = new ExpandoObject() as IDictionary<string, object>;
 
             using (var csvReader = ReadCsv.FromString(csv))
             {
@@ -24,30 +23,23 @@ namespace Retrosheet.Utilities.GameLogUtility
                 {
                     for (var i = 0; i < _properties.Length; i++)
                     {
-                        var added = gameLog.TryAdd(_properties[i], csvReader[i]);
-
-                        if (!added)
-                        {
-                            throw new InvalidOperationException($"The property {_properties[i]} could not be added.");
-                        }
+                        gameLog.Add(_properties[i], csvReader[i]);
                     }
 
-                    var dyno = ((dynamic) gameLog);
-                    var gameDate = dyno.game_date;
-                    var gameYear = (string)gameDate.Substring(0, 4);
-                    var gameMonth = (string)gameDate.Substring(4, 2);
-                    var gameDay = (string)gameDate.Substring(6, 2);
-                    
-                    gameLog.TryAdd("id", $"{gameYear}-{gameMonth}-{gameDay}-{dyno.game_number}-{dyno.home_team}");
-                    gameLog.TryAdd("game_month", byte.Parse(gameMonth));
-                    gameLog.TryAdd("game_day", byte.Parse(gameDay));
-                    gameLog.TryAdd("game_year", short.Parse(gameYear));
+                    var gameDate = (string) gameLog["game_date"];
+                    var gameYear = gameDate.Substring(0, 4);
+                    var gameMonth = gameDate.Substring(4, 2);
+                    var gameDay = gameDate.Substring(6, 2);
 
+                    gameLog.Add("id",
+                        $"{gameYear}-{gameMonth}-{gameDay}-{gameLog["game_number"]}-{gameLog["home_team"]}");
+                    gameLog.Add("game_month", byte.Parse(gameMonth));
+                    gameLog.Add("game_day", byte.Parse(gameDay));
+                    gameLog.Add("game_year", short.Parse(gameYear));
                 }
-
             }
-            
-            return gameLog;
+
+            return (ExpandoObject) gameLog;
         }
     }
 }
